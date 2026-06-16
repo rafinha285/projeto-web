@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mikrolabs Viagem 123 — Buscar Destinos</title>
+  <meta name="description"
+    content="Pesquise e encontre destinos incríveis para sua próxima viagem com a Mikrolabs Viagem 123." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/search.css}" href="/assets/search/search.css" />
+</head>
+
+<body>
+
+  <div class="bg-map"></div>
+  <div class="bg-overlay"></div>
+
+  <div class="content-wrapper">
+    <header class="navbar">
+      <a th:href="@{/}" href="/" class="brand">
+        <span class="brand-icon">✈</span>
+        <div>
+          <div class="brand-name">Mikrolabs</div>
+          <div class="brand-sub">Viagem 123</div>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a th:href="@{/}" href="/">Início</a>
+        <a th:href="@{/search}" href="/search" class="active">Destinos</a>
+        <a href="#">Pacotes</a>
+        <a href="#">Sobre</a>
+      </nav>
+
+      <div class="nav-actions">
+        <a th:href="@{/profile}" href="/profile" class="btn-outline">Meu Perfil</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="search-hero">
+        <p class="hero-tagline">Encontre seu destino</p>
+        <h1 class="hero-title">Buscar <em>destinos</em></h1>
+
+        <div class="search-bar">
+          <div class="search-field">
+            <label for="search-name">Destino</label>
+            <input type="text" placeholder="Para onde você quer ir?" id="search-name">
+          </div>
+          <div class="search-divider"></div>
+          <div class="search-field">
+            <label for="search-start-date">Check-in</label>
+            <input type="date" id="search-start-date">
+          </div>
+          <div class="search-divider"></div>
+          <div class="search-field">
+            <label for="search-end-date">Check-out</label>
+            <input type="date" id="search-end-date">
+          </div>
+          <button class="btn-search" id="btnSearch">
+            <span class="btn-search-text">Buscar</span>
+            <span class="btn-search-loader" id="searchLoader"></span>
+          </button>
+        </div>
+      </section>
+
+      <section class="filters-bar" id="filtersBar">
+        <div class="filter-chips">
+          <button class="chip active" data-continent="all">🌍 Todos</button>
+          <button class="chip" data-continent="Europa">🏰 Europa</button>
+          <button class="chip" data-continent="Ásia">🏯 Ásia</button>
+          <button class="chip" data-continent="América do Sul">🌴 América do Sul</button>
+          <button class="chip" data-continent="América do Norte">🗽 América do Norte</button>
+          <button class="chip" data-continent="África">🦁 África</button>
+          <button class="chip" data-continent="Oceania">🐨 Oceania</button>
+        </div>
+
+        <div class="sort-wrap">
+          <label for="sort-select">Ordenar</label>
+          <select id="sort-select">
+            <option value="name">Nome (A–Z)</option>
+            <option value="name-desc">Nome (Z–A)</option>
+            <option value="price">Menor preço</option>
+            <option value="price-desc">Maior preço</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- RESULTS -->
+      <section class="results-section">
+        <div class="results-header">
+          <h2 id="resultsTitle">Destinos Populares</h2>
+          <span class="results-count" id="resultsCount"></span>
+        </div>
+
+        <div class="destinations-grid" id="destinationsGrid">
+        </div>
+
+        <div class="empty-state" id="emptyState" style="display:none;">
+          <span class="empty-icon">🔍</span>
+          <h3>Nenhum destino encontrado</h3>
+          <p>Tente buscar com outros termos ou ajuste os filtros.</p>
+        </div>
+
+        <div class="loading-state" id="loadingState">
+          <div class="pulse-card"></div>
+          <div class="pulse-card"></div>
+          <div class="pulse-card"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2026 Mikrolabs Viagem 123. Todos os direitos reservados.</p>
+    </footer>
+  </div>
+
+  <script th:src="@{/js/search.js}" src="/assets/search/search.js"></script>
+</body>
+
+</html>

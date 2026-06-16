@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mikrolabs Viagem 123 — Reservar Destino</title>
+  <meta name="description" content="Faça a reserva da sua próxima viagem com a Mikrolabs Viagem 123."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/reserve.css}" href="/assets/reserve/reserve.css" />
+</head>
+<body>
+
+<div class="bg-map"></div>
+<div class="bg-overlay"></div>
+
+<div class="content-wrapper">
+  <header class="navbar">
+    <a th:href="@{/}" href="/" class="brand">
+      <span class="brand-icon">✈</span>
+      <div>
+        <div class="brand-name">Mikrolabs</div>
+        <div class="brand-sub">Viagem 123</div>
+      </div>
+    </a>
+
+    <nav class="nav-links">
+      <a th:href="@{/}" href="/">Início</a>
+      <a th:href="@{/search}" href="/search">Buscar</a>
+      <a href="#">Pacotes</a>
+      <a href="#">Sobre</a>
+    </nav>
+
+    <div class="nav-actions">
+      <a th:href="@{/profile}" href="/profile" class="btn-outline">Meu Perfil</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="reserve-hero">
+      <p class="hero-tagline">Quase lá!</p>
+      <h1 class="hero-title">Sua <em>Reserva</em></h1>
+    </section>
+
+    <!-- LOADING STATE -->
+    <div id="loadingState" class="loading-state">
+      <div class="pulse-card"></div>
+    </div>
+
+    <!-- BOOKING SECTION -->
+    <section class="reserve-container" id="reserveContainer" style="display: none;">
+      <!-- DESTINATION PREVIEW -->
+      <div class="destination-card">
+        <div class="dest-img-wrap">
+          <img id="destImage" src="" alt="Destino" class="dest-img" onerror="this.style.background='linear-gradient(135deg,#132236,#1a3050)'; this.style.objectFit='none';">
+          <div class="dest-tag" id="destContinent">🌍</div>
+        </div>
+        <div class="dest-info">
+          <h2 id="destName">Nome do Destino</h2>
+          <p class="dest-country" id="destCountry">País</p>
+          <div class="dest-desc">
+            <p id="destDescription">Descrição do destino</p>
+          </div>
+          <div class="dest-price-box">
+             <p>Valor da diária:</p>
+             <h3 id="destPrice">R$ 0,00</h3>
+          </div>
+          <div class="dest-map-box" id="destMapBox" style="display: none;">
+             <p class="map-label">📍 Localização</p>
+             <div class="map-wrapper">
+               <iframe id="destMap" src="" width="100%" height="250" style="border:0; border-radius: 10px;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOKING FORM -->
+      <div class="reserve-form-card">
+        <h3>Detalhes da Viagem</h3>
+        <form id="bookForm" class="reserve-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="checkIn">Check-in</label>
+              <input type="date" id="checkIn" required>
+            </div>
+            <div class="form-group">
+              <label for="checkOut">Check-out</label>
+              <input type="date" id="checkOut" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="adults">Adultos</label>
+              <input type="number" id="adults" min="1" value="1" required>
+            </div>
+            <div class="form-group">
+              <label for="children">Crianças</label>
+              <input type="number" id="children" min="0" value="0">
+            </div>
+          </div>
+
+          <div class="form-group">
+             <label for="requests">Pedidos Especiais (opcional)</label>
+             <textarea id="requests" rows="3" placeholder="Ex: Cama extra, restrições alimentares..."></textarea>
+          </div>
+
+          <div class="summary-box">
+             <h4>Resumo do Pedido</h4>
+             <div class="summary-line">
+                <span>Diárias:</span>
+                <span id="summaryDays">0</span>
+             </div>
+             <div class="summary-line total-line">
+                <span>Total Estimado:</span>
+                <span id="summaryTotal">R$ 0,00</span>
+             </div>
+          </div>
+
+          <button type="submit" class="btn-confirm" id="btnConfirm">
+            <span class="btn-text">Confirmar Reserva</span>
+            <span class="btn-loader" id="confirmLoader"></span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ERROR STATE -->
+    <div class="empty-state" id="errorState" style="display:none;">
+      <span class="empty-icon">⚠️</span>
+      <h3>Destino não encontrado</h3>
+      <p>O destino que você tentou reservar não existe ou a página está incorreta.</p>
+      <a th:href="@{/search}" href="/search" class="btn-outline" style="margin-top: 20px; display: inline-block;">Voltar para Busca</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Mikrolabs Viagem 123. Todos os direitos reservados.</p>
+  </footer>
+</div>
+
+<script th:src="@{/js/reserve.js}" src="/assets/reserve/reserve.js"></script>
+</body>
+</html>

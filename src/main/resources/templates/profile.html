@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mikrolabs Viagem 123 — Perfil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/profile.css}" href="assets/profile/profile.css" />
+</head>
+<body>
+<div class="bg-map"></div>
+<div class="bg-overlay"></div>
+
+<div class="page">
+  <header class="topbar">
+    <a th:href="@{/}" href="/" class="brand">
+      <span class="brand-icon">✈</span>
+      <div>
+        <div class="brand-name">Mikrolabs</div>
+        <div class="brand-sub">Viagem 123</div>
+      </div>
+    </a>
+    <div class="topbar-right">
+      <button class="topbar-notif">🔔<span class="notif-dot"></span></button>
+      <div class="topbar-avatar">JD</div>
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Abrir menu">☰</button>
+    </div>
+  </header>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-section">
+      <p class="sidebar-label">Menu</p>
+      <a href="#" class="nav-item">🏠 Início</a>
+      <a href="#" class="nav-item nav-tab" data-tab="viagens">✈ Minhas Viagens</a>
+      <a href="#" class="nav-item nav-tab" data-tab="favoritos">🔖 Favoritos</a>
+      <a href="#" class="nav-item nav-tab" data-tab="pagamento">💳 Pagamentos</a>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-section">
+      <p class="sidebar-label">Conta</p>
+      <a href="#" class="nav-item nav-tab active" data-tab="dados">👤 Perfil</a>
+      <a href="#" class="nav-item nav-tab" data-tab="seguranca">🔒 Segurança</a>
+      <a href="#" class="nav-item">🔔 Notificações</a>
+    </div>
+    <div class="sidebar-bottom">
+      <a th:href="@{/logout}" href="/logout" class="nav-item danger">🚪 Sair</a>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="page-header-mini">
+      <h1>Meu <em>Perfil</em></h1>
+    </div>
+
+    <div class="tab-panel active" id="tab-dados">
+      <div class="profile-hero-mini card">
+        <div class="avatar-group">
+          <div class="avatar-ring-mini" id="heroInitials">--</div>
+          <button class="btn-avatar-mini">Alterar</button>
+        </div>
+        <div class="profile-info-mini">
+          <h2 id="heroName">Carregando...</h2>
+          <p id="heroEmail">carregando@email.com</p>
+          <div class="badges-mini">
+            <span class="badge">✈ Viajante</span>
+            <span class="badge">⭐ Gold</span>
+            <span class="badge">📍 Brasil</span>
+          </div>
+        </div>
+        <div class="profile-stats-mini">
+          <div class="stat"><strong>12</strong><span>Viagens</span></div>
+          <div class="stat"><strong>8</strong><span>Países</span></div>
+          <div class="stat"><strong>4.9</strong><span>Nota</span></div>
+        </div>
+      </div>
+
+      <div class="grid-compact">
+        <div class="card">
+          <h3 class="card-title-mini">👤 Informações Pessoais</h3>
+          <div class="field"><label>Nome</label><input type="text" id="inputName" placeholder="Carregando..."></div>
+          <div class="field-row">
+            <div class="field"><label>Nascimento</label><input type="text" id="inputBirthdate" placeholder="DD/MM/AAAA"></div>
+            <div class="field"><label>Nacionalidade</label>
+              <select id="inputNationality">
+                <option value="Brasileiro">🇧🇷 Brasileiro</option>
+                <option value="Afegão">🇦🇫 Afegão</option>
+                <option value="Alemão">🇩🇪 Alemão</option>
+                <option value="Angolano">🇦🇴 Angolano</option>
+                <option value="Argentino">🇦🇷 Argentino</option>
+                <option value="Australiano">🇦🇺 Australiano</option>
+                <option value="Austríaco">🇦🇹 Austríaco</option>
+                <option value="Belga">🇧🇪 Belga</option>
+                <option value="Boliviano">🇧🇴 Boliviano</option>
+                <option value="Britânico">🇬🇧 Britânico</option>
+                <option value="Camaronês">🇨🇲 Camaronês</option>
+                <option value="Canadense">🇨🇦 Canadense</option>
+                <option value="Chileno">🇨🇱 Chileno</option>
+                <option value="Chinês">🇨🇳 Chinês</option>
+                <option value="Colombiano">🇨🇴 Colombiano</option>
+                <option value="Congolês">🇨🇩 Congolês</option>
+                <option value="Coreano">🇰🇷 Coreano</option>
+                <option value="Costa-riquenho">🇨🇷 Costa-riquenho</option>
+                <option value="Croata">🇭🇷 Croata</option>
+                <option value="Cubano">🇨🇺 Cubano</option>
+                <option value="Dinamarquês">🇩🇰 Dinamarquês</option>
+                <option value="Egípcio">🇪🇬 Egípcio</option>
+                <option value="Espanhol">🇪🇸 Espanhol</option>
+                <option value="Estadunidense">🇺🇸 Estadunidense</option>
+                <option value="Filipino">🇵🇭 Filipino</option>
+                <option value="Finlandês">🇫🇮 Finlandês</option>
+                <option value="Francês">🇫🇷 Francês</option>
+                <option value="Grego">🇬🇷 Grego</option>
+                <option value="Haitiano">🇭🇹 Haitiano</option>
+                <option value="Holandês">🇳🇱 Holandês</option>
+                <option value="Indiano">🇮🇳 Indiano</option>
+                <option value="Irlandês">🇮🇪 Irlandês</option>
+                <option value="Israelense">🇮🇱 Israelense</option>
+                <option value="Italiano">🇮🇹 Italiano</option>
+                <option value="Japonês">🇯🇵 Japonês</option>
+                <option value="Marroquino">🇲🇦 Marroquino</option>
+                <option value="Mexicano">🇲🇽 Mexicano</option>
+                <option value="Moçambicano">🇲🇿 Moçambicano</option>
+                <option value="Nigeriano">🇳🇬 Nigeriano</option>
+                <option value="Norueguês">🇳🇴 Norueguês</option>
+                <option value="Panamenho">🇵🇦 Panamenho</option>
+                <option value="Paraguaio">🇵🇾 Paraguaio</option>
+                <option value="Peruano">🇵🇪 Peruano</option>
+                <option value="Polonês">🇵🇱 Polonês</option>
+                <option value="Português">🇵🇹 Português</option>
+                <option value="Russo">🇷🇺 Russo</option>
+                <option value="Senegalês">🇸🇳 Senegalês</option>
+                <option value="Sueco">🇸🇪 Sueco</option>
+                <option value="Suíço">🇨🇭 Suíço</option>
+                <option value="Sírio">🇸🇾 Sírio</option>
+                <option value="Turco">🇹🇷 Turco</option>
+                <option value="Ucraniano">🇺🇦 Ucraniano</option>
+                <option value="Uruguaio">🇺🇾 Uruguaio</option>
+                <option value="Venezuelano">🇻🇪 Venezuelano</option>
+                <option value="Zimbabuano">🇿🇼 Zimbabuano</option>
+                <option value="Outro">🌍 Outro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title-mini">📬 Contato & Bio</h3>
+          <div class="field-row">
+            <div class="field"><label>Telefone</label><input type="tel" id="inputPhone" placeholder="(00) 00000-0000"></div>
+            <div class="field"><label>Cidade</label><input type="text" id="inputCity" placeholder="Sua Cidade"></div>
+          </div>
+          <div class="field"><label>Bio</label><textarea id="inputBio" placeholder="Conte algo sobre você..."></textarea></div>
+        </div>
+
+        <div class="card card-full-mini">
+          <h3 class="card-title-mini">✈ Preferências</h3>
+          <div class="field-grid-4">
+            <div class="field"><label>Assento</label>
+              <select id="inputAssento">
+                <option value="Janela">Janela</option>
+                <option value="Corredor">Corredor</option>
+                <option value="Meio">Meio</option>
+              </select>
+            </div>
+            <div class="field"><label>Comida</label>
+              <select id="inputComida">
+                <option value="Padrão">Padrão</option>
+                <option value="Vegetariana">Vegetariana</option>
+                <option value="Vegana">Vegana</option>
+                <option value="Sem Glúten">Sem Glúten</option>
+                <option value="Infantil">Infantil</option>
+              </select>
+            </div>
+            <div class="field"><label>Classe</label>
+              <select id="inputClasse">
+                <option value="Econômica">Econômica</option>
+                <option value="Premium">Premium</option>
+                <option value="Executiva">Executiva</option>
+                <option value="Primeira Classe">Primeira Classe</option>
+              </select>
+            </div>
+            <div class="field"><label>Moeda</label>
+              <select id="inputMoeda">
+                <option value="BRL">BRL (R$)</option>
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+              </select>
+            </div>
+            <div class="btn-container">
+              <button class="btn-primary-mini" id="btnSave">Salvar Alterações</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ TAB: Viagens ═══ -->
+    <div class="tab-panel" id="tab-viagens">
+      <div class="viagens-header">
+        <h2 class="card-title-mini">✈ Minhas Viagens</h2>
+        <p class="viagens-subtitle">Todas as suas reservas de viagem</p>
+      </div>
+
+      <div class="viagens-loading" id="viagensLoading">
+        <div class="pulse-card-sm"></div>
+        <div class="pulse-card-sm"></div>
+      </div>
+
+      <div class="viagens-empty" id="viagensEmpty" style="display: none;">
+        <span class="empty-icon">🌍</span>
+        <h3>Nenhuma viagem ainda</h3>
+        <p>Você ainda não fez nenhuma reserva. Explore nossos destinos!</p>
+        <a th:href="@{/search}" href="/search" class="btn-primary-mini" style="margin-top: 12px; text-decoration: none; display: inline-block;">Explorar Destinos</a>
+      </div>
+
+      <div class="viagens-list" id="viagensList" style="display: none;">
+        <!-- populated via JS -->
+      </div>
+    </div>
+
+    <!-- ═══ TAB: Favoritos ═══ -->
+    <div class="tab-panel" id="tab-favoritos">
+      <div class="viagens-header">
+        <h2 class="card-title-mini">🔖 Meus Favoritos</h2>
+        <p class="viagens-subtitle">Destinos que você salvou para depois</p>
+      </div>
+
+      <div class="viagens-loading" id="favoritosLoading">
+        <div class="pulse-card-sm"></div>
+        <div class="pulse-card-sm"></div>
+      </div>
+
+      <div class="viagens-empty" id="favoritosEmpty" style="display: none;">
+        <span class="empty-icon">💛</span>
+        <h3>Nenhum favorito ainda</h3>
+        <p>Explore destinos e salve os que mais gostar para acessar rapidamente!</p>
+        <a th:href="@{/search}" href="/search" class="btn-primary-mini" style="margin-top: 12px; text-decoration: none; display: inline-block;">Explorar Destinos</a>
+      </div>
+
+      <div class="viagens-list" id="favoritosList" style="display: none;">
+        <!-- populated via JS -->
+      </div>
+    </div>
+
+    <!-- ═══ TAB: Pagamento ═══ -->
+    <div class="tab-panel" id="tab-pagamento">
+      <div class="grid-compact">
+
+        <!-- Cartões Salvos -->
+        <div class="card card-full-mini">
+          <div class="section-header-row">
+            <h3 class="card-title-mini">💳 Métodos de Pagamento</h3>
+            <button class="btn-outline-sm" id="btnAddCard">+ Adicionar</button>
+          </div>
+
+          <div class="payment-cards" id="paymentCardsList">
+            <div class="payment-card-item">
+              <div class="card-brand visa">VISA</div>
+              <div class="card-details">
+                <span class="card-number">•••• •••• •••• 4829</span>
+                <span class="card-expiry">Expira 08/27</span>
+              </div>
+              <span class="card-default-badge">Padrão</span>
+              <button class="card-remove-btn" title="Remover">✕</button>
+            </div>
+            <div class="payment-card-item">
+              <div class="card-brand mastercard">MC</div>
+              <div class="card-details">
+                <span class="card-number">•••• •••• •••• 1053</span>
+                <span class="card-expiry">Expira 03/26</span>
+              </div>
+              <button class="card-remove-btn" title="Remover">✕</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Adicionar Novo Cartão -->
+        <div class="card" id="addCardForm" style="display: none;">
+          <h3 class="card-title-mini">➕ Novo Cartão</h3>
+          <div class="field"><label>Nome no Cartão</label><input type="text" id="inputCardName" placeholder="Como impresso no cartão"></div>
+          <div class="field"><label>Número do Cartão</label><input type="text" id="inputCardNumber" placeholder="0000 0000 0000 0000" maxlength="19"></div>
+          <div class="field-row">
+            <div class="field"><label>Validade</label><input type="text" id="inputCardExpiry" placeholder="MM/AA" maxlength="5"></div>
+            <div class="field"><label>CVV</label><input type="password" id="inputCardCvv" placeholder="•••" maxlength="4"></div>
+          </div>
+          <div class="btn-container" style="margin-top: 4px;">
+            <button class="btn-primary-mini" id="btnSaveCard">Salvar Cartão</button>
+            <button class="btn-ghost" id="btnCancelCard">Cancelar</button>
+          </div>
+        </div>
+
+        <!-- Endereço de Cobrança -->
+        <div class="card">
+          <h3 class="card-title-mini">🏠 Endereço de Cobrança</h3>
+          <div class="field"><label>Endereço</label><input type="text" id="inputBillingAddress" placeholder="Rua, número, complemento"></div>
+          <div class="field-row">
+            <div class="field"><label>Cidade</label><input type="text" id="inputBillingCity" placeholder="Cidade"></div>
+            <div class="field"><label>CEP</label><input type="text" id="inputBillingZip" placeholder="00000-000" maxlength="9"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Estado</label><input type="text" id="inputBillingState" placeholder="UF"></div>
+            <div class="field"><label>País</label>
+              <select id="inputBillingCountry">
+                <option value="BR">🇧🇷 Brasil</option>
+                <option value="US">🇺🇸 Estados Unidos</option>
+                <option value="PT">🇵🇹 Portugal</option>
+                <option value="other">🌍 Outro</option>
+              </select>
+            </div>
+          </div>
+          <div class="btn-container" style="margin-top: 4px;">
+            <button class="btn-primary-mini" id="btnSaveBilling">Salvar Endereço</button>
+          </div>
+        </div>
+
+        <!-- Histórico de Transações -->
+        <div class="card card-full-mini">
+          <h3 class="card-title-mini">📄 Histórico de Transações</h3>
+          <div class="transactions-table-wrap">
+            <table class="transactions-table">
+              <thead>
+              <tr>
+                <th>Data</th>
+                <th>Descrição</th>
+                <th>Método</th>
+                <th>Valor</th>
+                <th>Status</th>
+              </tr>
+              </thead>
+              <tbody id="transactionsBody">
+              <tr>
+                <td>22/05/2026</td>
+                <td>Passagem — São Paulo → Lisboa</td>
+                <td>Visa •4829</td>
+                <td class="txn-amount">R$ 3.450,00</td>
+                <td><span class="txn-status success">Aprovado</span></td>
+              </tr>
+              <tr>
+                <td>18/04/2026</td>
+                <td>Hotel — Porto, 5 noites</td>
+                <td>MC •1053</td>
+                <td class="txn-amount">R$ 2.180,00</td>
+                <td><span class="txn-status success">Aprovado</span></td>
+              </tr>
+              <tr>
+                <td>02/03/2026</td>
+                <td>Passagem — Rio → Buenos Aires</td>
+                <td>Visa •4829</td>
+                <td class="txn-amount">R$ 1.290,00</td>
+                <td><span class="txn-status refunded">Reembolsado</span></td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══ TAB: Segurança ═══ -->
+    <div class="tab-panel" id="tab-seguranca">
+      <div class="grid-compact">
+
+        <!-- Alterar Senha -->
+        <div class="card">
+          <h3 class="card-title-mini">🔑 Alterar Senha</h3>
+          <div class="field"><label>Senha Atual</label><input type="password" id="inputCurrentPass" placeholder="••••••••"></div>
+          <div class="field"><label>Nova Senha</label><input type="password" id="inputNewPass" placeholder="Mínimo 8 caracteres"></div>
+          <div class="field">
+            <label>Confirmar Nova Senha</label><input type="password" id="inputConfirmPass" placeholder="Repita a nova senha">
+            <div class="password-strength" id="passwordStrength"></div>
+          </div>
+          <div class="btn-container" style="margin-top: 4px;">
+            <button class="btn-primary-mini" id="btnChangePass">Alterar Senha</button>
+          </div>
+        </div>
+
+        <!-- Autenticação em Dois Fatores -->
+        <div class="card">
+          <h3 class="card-title-mini">🛡️ Autenticação de Dois Fatores</h3>
+          <div class="security-option">
+            <div class="security-option-info">
+              <strong>Autenticação via App</strong>
+              <p>Use Google Authenticator ou Authy para gerar códigos de verificação.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggle2FA">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="sidebar-divider" style="margin: 8px 0;"></div>
+          <div class="security-option">
+            <div class="security-option-info">
+              <strong>Verificação por SMS</strong>
+              <p>Receba um código por SMS ao fazer login em um novo dispositivo.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggleSMS" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="sidebar-divider" style="margin: 8px 0;"></div>
+          <div class="security-option">
+            <div class="security-option-info">
+              <strong>Verificação por E-mail</strong>
+              <p>Confirme logins suspeitos com um link enviado ao seu e-mail.</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="toggleEmail" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Sessões Ativas -->
+        <div class="card card-full-mini">
+          <div class="section-header-row">
+            <h3 class="card-title-mini">📱 Sessões Ativas</h3>
+            <button class="btn-outline-sm btn-danger-sm" id="btnRevokeAll">Encerrar Todas</button>
+          </div>
+          <div class="sessions-list">
+            <div class="session-item current">
+              <div class="session-icon">💻</div>
+              <div class="session-info">
+                <strong>Chrome — Windows 11</strong>
+                <span>São Paulo, BR · Agora (esta sessão)</span>
+              </div>
+              <span class="session-badge current">Atual</span>
+            </div>
+            <div class="session-item">
+              <div class="session-icon">📱</div>
+              <div class="session-info">
+                <strong>Safari — iPhone 15</strong>
+                <span>São Paulo, BR · 2 horas atrás</span>
+              </div>
+              <button class="btn-outline-sm btn-danger-sm session-revoke">Encerrar</button>
+            </div>
+            <div class="session-item">
+              <div class="session-icon">🖥️</div>
+              <div class="session-info">
+                <strong>Firefox — macOS</strong>
+                <span>Rio de Janeiro, BR · 3 dias atrás</span>
+              </div>
+              <button class="btn-outline-sm btn-danger-sm session-revoke">Encerrar</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zona de Perigo -->
+        <div class="card card-full-mini card-danger">
+          <h3 class="card-title-mini" style="color: #e74c3c;">⚠️ Zona de Perigo</h3>
+          <div class="security-option">
+            <div class="security-option-info">
+              <strong>Excluir minha conta</strong>
+              <p>Esta ação é permanente e não pode ser desfeita. Todos os dados serão removidos.</p>
+            </div>
+            <button class="btn-danger" id="btnDeleteAccount">Excluir Conta</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+<script th:src="@{/js/profile.js}" src="assets/profile/profile.js"></script>
+</body>
+</html>

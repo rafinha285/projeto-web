@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mikrolabs Viagem 123 — Gerenciamento</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/gerenciamento.css}" href="/assets/gerenciamento/gerenciamento.css" />
+
+</head>
+<body>
+
+<div class="bg-map"></div>
+<div class="bg-overlay"></div>
+
+<div class="page">
+  <header class="topbar">
+    <a th:href="@{/}" href="/" class="brand">
+      <span class="brand-icon">✈</span>
+      <div>
+        <div class="brand-name">Mikrolabs</div>
+        <div class="brand-sub">Viagem 123</div>
+      </div>
+    </a>
+    <div class="topbar-right">
+      <a th:href="@{/}" href="/" class="topbar-link">← Início</a>
+      <a th:href="@{/profile}" href="/profile" class="topbar-link">Meu Perfil</a>
+      <a th:href="@{/logout}" href="/logout" class="topbar-link danger">Sair</a>
+    </div>
+  </header>
+
+  <div class="panel-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="panel-sidebar">
+      <p class="sidebar-label">Painel</p>
+      <button class="panel-nav-item active" data-section="usuarios" id="navUsuarios">👥 Usuários</button>
+      <button class="panel-nav-item" data-section="viagens" id="navViagens">🛫 Viagens</button>
+      <button class="panel-nav-item" data-section="em-breve" disabled>📊 Relatórios</button>
+      <button class="panel-nav-item" data-section="em-breve" disabled>⚙️ Configurações</button>
+    </aside>
+
+    <!-- Main content area -->
+    <main class="panel-content">
+      <div class="page-header">
+        <h1>Painel de <em>Gerenciamento</em></h1>
+        <p class="page-subtitle">Administração do sistema</p>
+      </div>
+
+      <!-- ═══ SECTION: Usuários ═══ -->
+      <section class="panel-section active" id="section-usuarios">
+        <!-- Stats cards -->
+        <div class="stats-row" id="statsRow">
+          <div class="stat-card">
+            <span class="stat-icon">👥</span>
+            <div>
+              <strong id="statTotal">--</strong>
+              <span>Total de Usuários</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">🛡️</span>
+            <div>
+              <strong id="statAdmins">--</strong>
+              <span>Administradores</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">✈</span>
+            <div>
+              <strong id="statUsers">--</strong>
+              <span>Usuários</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Users table -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">👥 Usuários Cadastrados</h2>
+            <div class="search-box">
+              <input type="text" id="searchInput" placeholder="Buscar usuário..." />
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="users-table" id="usersTable">
+              <thead>
+                <tr>
+                  <th class="sortable" data-sort="name">Nome <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="email">E-mail <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="role">Role <span class="sort-arrow"></span></th>
+                  <th class="sortable" data-sort="cidade">Cidade <span class="sort-arrow"></span></th>
+                  <th>Telefone</th>
+                </tr>
+              </thead>
+              <tbody id="usersBody">
+                <tr>
+                  <td colspan="5" class="loading-cell">Carregando usuários...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══ SECTION: Viagens ═══ -->
+      <section class="panel-section" id="section-viagens">
+        <div class="admin-header">
+          <h2 class="card-title">🛫 Gerenciamento de Destinos</h2>
+          <p class="page-subtitle">Adicione, visualize e remova pacotes de viagens que aparecerão nas buscas.</p>
+        </div>
+
+        <div class="admin-content">
+          <!-- Form -->
+          <div class="card form-section">
+            <h2 class="card-title">Criar Novo Destino</h2>
+            <form id="destinationForm" class="dest-form">
+              <div class="input-group">
+                <label for="dest-name">Nome do Destino</label>
+                <input type="text" id="dest-name" placeholder="Ex: Paris" required>
+              </div>
+
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="dest-country">País</label>
+                  <input type="text" id="dest-country" placeholder="Ex: França" required>
+                </div>
+                <div class="input-group">
+                  <label for="dest-continent">Continente</label>
+                  <select id="dest-continent" required>
+                    <option value="" disabled selected>Selecione</option>
+                    <option value="Americas">Américas</option>
+                    <option value="Europe">Europa</option>
+                    <option value="Asia">Ásia</option>
+                    <option value="Africa">África</option>
+                    <option value="Oceania">Oceania</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="dest-price">Preço Base (BRL)</label>
+                  <input type="number" id="dest-price" step="0.01" min="0" placeholder="Ex: 5000.00" required>
+                </div>
+                <div class="input-group">
+                  <label for="dest-imageUrl">URL da Imagem</label>
+                  <input type="url" id="dest-imageUrl" placeholder="https://..." required>
+                </div>
+              </div>
+
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="dest-start">Data Início (Opcional)</label>
+                  <input type="date" id="dest-start">
+                </div>
+                <div class="input-group">
+                  <label for="dest-end">Data Fim (Opcional)</label>
+                  <input type="date" id="dest-end">
+                </div>
+              </div>
+
+              <div class="input-row">
+                <div class="input-group">
+                  <label for="dest-lat">Latitude</label>
+                  <input type="number" id="dest-lat" step="any" placeholder="Ex: 48.8566">
+                </div>
+                <div class="input-group">
+                  <label for="dest-lng">Longitude</label>
+                  <input type="number" id="dest-lng" step="any" placeholder="Ex: 2.3522">
+                </div>
+              </div>
+
+              <div class="input-group">
+                <label for="dest-desc">Descrição</label>
+                <textarea id="dest-desc" rows="3" placeholder="Uma breve descrição da viagem..." required></textarea>
+              </div>
+
+              <button type="submit" id="btnSubmitDest" class="btn-save">
+                <span class="btn-text">Salvar Destino</span>
+                <div class="spinner"></div>
+              </button>
+            </form>
+          </div>
+
+          <!-- Published List -->
+          <div class="card list-section">
+            <div class="list-header">
+              <h2 class="card-title">Destinos Publicados</h2>
+              <button class="btn-refresh" onclick="loadLocations()" title="Atualizar">🔄</button>
+            </div>
+            <div id="locationsList" class="locations-list">
+              <!-- populated via js -->
+            </div>
+            <div id="loadingState" class="loading-state" style="display:none;">Carregando destinos...</div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer>
+    <p>&copy; 2026 Mikrolabs Viagem 123. Todos os direitos reservados.</p>
+  </footer>
+</div>
+
+<!-- ═══ EDIT USER MODAL ═══ -->
+<div class="modal-overlay" id="editModalOverlay">
+  <div class="modal" id="editModal">
+    <div class="modal-header">
+      <h2>✏️ Editar Usuário</h2>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editEmail" />
+      <div class="field-row">
+        <div class="field">
+          <label>Nome</label>
+          <input type="text" id="editName" placeholder="Nome do usuário" />
+        </div>
+        <div class="field">
+          <label>Role</label>
+          <select id="editRole">
+            <option value="user">user</option>
+            <option value="admin">admin</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Cidade</label>
+          <input type="text" id="editCidade" placeholder="Cidade" />
+        </div>
+        <div class="field">
+          <label>Telefone</label>
+          <input type="tel" id="editTelefone" placeholder="(00) 00000-0000" />
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>Nacionalidade</label>
+          <input type="text" id="editNacionalidade" placeholder="Nacionalidade" />
+        </div>
+        <div class="field">
+          <label>Nascimento</label>
+          <input type="date" id="editNascimento" />
+        </div>
+      </div>
+      <div class="field">
+        <label>Bio</label>
+        <textarea id="editBio" placeholder="Bio do usuário..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="btnCancel">Cancelar</button>
+      <button class="btn-save" id="btnSave">Salvar Alterações</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script th:src="@{/js/admin-locations.js}" src="/assets/admin-locations/admin-locations.js"></script>
+<script th:src="@{/js/gerenciamento.js}" src="/assets/gerenciamento/gerenciamento.js"></script>
+</body>
+</html>

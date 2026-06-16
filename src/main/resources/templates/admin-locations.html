@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mikrolabs Viagem 123 — Admin Locations</title>
+  <meta name="description" content="Management portal for travel destinations."/>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" th:href="@{/css/admin-locations.css}" href="/assets/admin-locations/admin-locations.css" />
+</head>
+<body>
+
+<div class="bg-map"></div>
+<div class="bg-overlay"></div>
+
+<nav class="navbar glass-panel">
+  <div class="nav-container">
+    <a th:href="@{/home}" href="/home" class="brand">
+      <span class="brand-icon">✈</span> Mikrolabs Viagem 123
+    </a>
+    <div class="nav-links">
+      <a th:href="@{/home}" href="/home">Home</a>
+      <a th:href="@{/search}" href="/search">Explorar</a>
+      <a th:href="@{/admin-locations}" href="/admin-locations" class="active">Painel Admin</a>
+      <a th:href="@{/profile}" href="/profile" class="btn-profile">Meu Perfil</a>
+    </div>
+  </div>
+</nav>
+
+<main class="admin-container">
+  <header class="admin-header">
+    <h1>Gerenciamento de Destinos</h1>
+    <p>Adicione, visualize e remova pacotes de viagens que aparecerão nas buscas.</p>
+  </header>
+
+  <div class="admin-content">
+    <!-- Formulation Form -->
+    <section class="admin-section form-section glass-panel">
+      <h2>Criar Novo Destino</h2>
+      <form id="destinationForm" class="dest-form">
+        <div class="input-group">
+          <label for="dest-name">Nome do Destino</label>
+          <input type="text" id="dest-name" placeholder="Ex: Paris" required>
+        </div>
+        
+        <div class="input-row">
+          <div class="input-group">
+            <label for="dest-country">País</label>
+            <input type="text" id="dest-country" placeholder="Ex: França" required>
+          </div>
+          <div class="input-group">
+            <label for="dest-continent">Continente</label>
+            <select id="dest-continent" required>
+              <option value="" disabled selected>Selecione</option>
+              <option value="Americas">Américas</option>
+              <option value="Europe">Europa</option>
+              <option value="Asia">Ásia</option>
+              <option value="Africa">África</option>
+              <option value="Oceania">Oceania</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="input-row">
+          <div class="input-group">
+            <label for="dest-price">Preço Base (BRL)</label>
+            <input type="number" id="dest-price" step="0.01" min="0" placeholder="Ex: 5000.00" required>
+          </div>
+          <div class="input-group">
+            <label for="dest-imageUrl">URL da Imagem</label>
+            <input type="url" id="dest-imageUrl" placeholder="https://..." required>
+          </div>
+        </div>
+
+        <div class="input-row">
+           <div class="input-group">
+               <label for="dest-start">Data Início (Opcional)</label>
+               <input type="date" id="dest-start">
+           </div>
+           <div class="input-group">
+               <label for="dest-end">Data Fim (Opcional)</label>
+               <input type="date" id="dest-end">
+           </div>
+        </div>
+
+        <div class="input-group">
+          <label for="dest-desc">Descrição</label>
+          <textarea id="dest-desc" rows="3" placeholder="Uma breve descrição da viagem..." required></textarea>
+        </div>
+
+        <button type="submit" id="btnSubmitDest" class="btn-primary">
+          <span class="btn-text">Salvar Destino</span>
+          <div class="spinner"></div>
+        </button>
+      </form>
+    </section>
+
+    <!-- Published List -->
+    <section class="admin-section list-section glass-panel">
+      <div class="list-header">
+        <h2>Destinos Publicados</h2>
+        <button class="btn-refresh" onclick="loadLocations()" title="Atualizar">🔄</button>
+      </div>
+      
+      <div id="locationsList" class="locations-list">
+        <!-- populated via js -->
+      </div>
+      <div id="loadingState" class="loading-state" style="display:none;">Carregando destinos...</div>
+    </section>
+
+  </div>
+</main>
+
+<script th:src="@{/js/admin-locations.js}" src="/assets/admin-locations/admin-locations.js"></script>
+</body>
+</html>

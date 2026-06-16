@@ -1,0 +1,376 @@
+/* ── RESET & BASE (Reaproveitado do Login) ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+    --navy:    #0d1b2a;
+    --navy2:   #132236;
+    --gold:    #c9a84c;
+    --gold-lt: #e8c97a;
+    --cream:   #f5f0e8;
+    --muted:   #8a9bb0;
+    --border:  rgba(255,255,255,0.10);
+    --card-bg: rgba(13, 27, 42, 0.65);
+    --red:     #e05c5c;
+}
+
+html, body {
+    min-height: 100%;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    color: var(--cream);
+    overflow-x: hidden;
+}
+
+/* ── BACKGROUND ── */
+.bg-map {
+    position: fixed; inset: 0; z-index: 0;
+    background: url("https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/World_map_-_low_resolution.svg/1200px-World_map_-_low_resolution.svg.png") center/cover no-repeat;
+    opacity: 0.03;
+}
+
+.bg-overlay {
+    position: fixed; inset: 0; z-index: 1;
+    background: radial-gradient(ellipse at 50% 0%, rgba(14,40,70,0.8) 0%, transparent 80%),
+    linear-gradient(180deg, rgba(13,27,42,0.4) 0%, #0d1b2a 100%);
+}
+
+.content-wrapper {
+    position: relative;
+    z-index: 2;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ── NAVEGAÇÃO ── */
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 0;
+    animation: fadeInDown 0.8s ease forwards;
+}
+
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon { font-size: 1.8rem; color: var(--gold); filter: drop-shadow(0 0 8px rgba(201,168,76,0.4)); }
+.brand-name { font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 700; color: var(--cream); letter-spacing: 0.02em; }
+.brand-sub { font-size: 0.72rem; font-weight: 300; color: var(--gold); letter-spacing: 0.14em; text-transform: uppercase; }
+
+.nav-links {
+    display: flex;
+    gap: 32px;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover, .nav-links a.active {
+    color: var(--gold);
+}
+
+.btn-outline {
+    text-decoration: none;
+    color: var(--cream);
+    border: 1px solid var(--border);
+    padding: 10px 24px;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    background: rgba(255,255,255,0.02);
+}
+
+.btn-outline:hover {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    color: var(--gold-lt);
+}
+
+.nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-admin {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.08);
+}
+
+.btn-admin:hover {
+    background: var(--gold);
+    color: var(--navy);
+}
+
+/* ── HERO SECTION ── */
+.hero-section {
+    text-align: center;
+    padding: 80px 0 60px;
+    animation: fadeIn 1s ease 0.3s forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.hero-tagline {
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--gold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--cream);
+    margin-bottom: 48px;
+}
+
+.hero-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--gold-lt);
+}
+
+/* ── BARRA DE BUSCA ── */
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 12px 12px 12px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 24px 64px rgba(0,0,0,0.3);
+}
+
+.search-field {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    flex: 1;
+}
+
+.search-field label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+}
+
+.search-field input {
+    background: transparent;
+    border: none;
+    color: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    width: 100%;
+}
+
+.search-field input::placeholder { color: rgba(138,155,176,0.5); }
+.search-field input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.5; cursor: pointer; }
+
+.search-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--border);
+    margin: 0 24px;
+}
+
+.btn-search {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-lt) 100%);
+    color: var(--navy);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 16px 36px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(201,168,76,0.3);
+}
+
+.btn-search:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(201,168,76,0.4);
+}
+
+/* ── DESTINOS EM DESTAQUE ── */
+.featured-destinations {
+    padding: 80px 0;
+    animation: fadeIn 1s ease 0.6s forwards;
+    opacity: 0;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 40px;
+}
+
+.section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.view-all {
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.view-all:hover { color: var(--gold-lt); }
+
+.destinations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 32px;
+}
+
+.dest-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+}
+
+.dest-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(201,168,76,0.4);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.dest-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border);
+}
+
+.dest-info {
+    padding: 24px;
+}
+
+.dest-tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gold);
+    margin-bottom: 12px;
+    background: rgba(201,168,76,0.1);
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.dest-info h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.dest-info p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.dest-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.price {
+    font-size: 0.85rem;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+}
+
+.price strong {
+    font-size: 1.2rem;
+    color: var(--cream);
+    font-weight: 700;
+}
+
+.btn-book {
+    background: transparent;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-book:hover {
+    background: var(--gold);
+    color: var(--navy);
+}
+
+/* ── FOOTER ── */
+footer {
+    text-align: center;
+    padding: 40px 0;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: auto;
+}
+
+/* ── RESPONSIVO ── */
+@media (max-width: 900px) {
+    .search-bar {
+        flex-direction: column;
+        border-radius: 20px;
+        padding: 24px;
+        gap: 16px;
+    }
+    .search-divider { width: 100%; height: 1px; margin: 8px 0; }
+    .btn-search { width: 100%; margin-top: 12px; }
+    .nav-links { display: none; /* Oculto no mobile para simplicidade do exemplo */ }
+}
+
+@media (max-width: 600px) {
+    .hero-title { font-size: 2.5rem; }
+    .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+}

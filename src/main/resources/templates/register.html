@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mikrolabs Viagem 123 — Cadastro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" th:href="@{/css/login.css}" href="/assets/login/login.css" />
+  <link rel="stylesheet" th:href="@{/css/register.css}" href="/assets/register/register.css" />
+</head>
+<body>
+  <div class="bg-map"></div>
+  <div class="bg-overlay"></div>
+  <div class="split">
+    <!-- LEFT PANEL -->
+    <div class="panel-left">
+      <div class="brand">
+        <span class="brand-icon">✈</span>
+        <div>
+          <div class="brand-name">Mikrolabs</div>
+          <div class="brand-sub">Viagem 123</div>
+        </div>
+      </div>
+      <div class="hero-text">
+        <p class="hero-tagline">Junte-se a nós</p>
+        <h1 class="hero-title">crie sua<br/><em>conta grátis.</em></h1>
+        <p class="hero-desc">Cadastre-se e comece a planejar sua próxima aventura com total praticidade.</p>
+      </div>
+      <div class="destinations">
+        <span class="dest-badge">🗼 Paris</span>
+        <span class="dest-badge">🌴 Bali</span>
+        <span class="dest-badge">🏔 Patagônia</span>
+        <span class="dest-badge">🌊 Maldivas</span>
+      </div>
+    </div>
+    <!-- RIGHT PANEL (FORM) -->
+    <div class="panel-right">
+      <div class="card">
+        <div class="card-header">
+          <h2>Criar conta</h2>
+          <p>Preencha os dados para se cadastrar</p>
+        </div>
+        <form id="registerForm" method="post" th:action="@{/register}" action="/register" novalidate>
+          <div class="field" id="field-name">
+            <label for="name">Nome completo</label>
+            <div class="input-wrap">
+              <input type="text" id="name" name="name" placeholder="Seu nome completo" autocomplete="name"/>
+              <span class="input-icon">👤</span>
+            </div>
+            <span class="field-error" id="error-name"></span>
+          </div>
+          <div class="field" id="field-email">
+            <label for="email">E-mail</label>
+            <div class="input-wrap">
+              <input type="email" id="email" name="email" placeholder="seu@email.com" autocomplete="email"/>
+              <span class="input-icon">✉</span>
+            </div>
+            <span class="field-error" id="error-email"></span>
+          </div>
+          <div class="field" id="field-password">
+            <label for="password">Senha</label>
+            <div class="input-wrap">
+              <input type="password" id="password" name="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password"/>
+              <button type="button" class="toggle-pw" id="togglePw" aria-label="Mostrar senha">👁</button>
+            </div>
+            <span class="field-error" id="error-password"></span>
+          </div>
+          <div class="field" id="field-confirm">
+            <label for="confirm">Confirmar senha</label>
+            <div class="input-wrap">
+              <input type="password" id="confirm" name="confirm" placeholder="Repita sua senha" autocomplete="new-password"/>
+              <button type="button" class="toggle-pw" id="toggleConfirm" aria-label="Mostrar confirmação">👁</button>
+            </div>
+            <span class="field-error" id="error-confirm"></span>
+          </div>
+          <button type="submit" class="btn-login" id="btnRegister">
+            <span class="btn-text">Cadastrar</span>
+            <span class="btn-loader" id="btnLoader"></span>
+          </button>
+          <div class="divider"><span>ou</span></div>
+          <div class="signup-row">
+            Já tem conta? <a th:href="@{/login}" href="/login">Entrar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script th:src="@{/js/register.js}" src="/assets/register/register.js"></script>
+</body>
+</html>
