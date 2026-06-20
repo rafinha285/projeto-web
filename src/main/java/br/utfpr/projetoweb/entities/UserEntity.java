@@ -6,13 +6,15 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
 @Getter
+@Setter
 @NoArgsConstructor
 public class UserEntity extends BaseEntity<UserDTO> {
     @Column(unique = true)
@@ -28,7 +30,7 @@ public class UserEntity extends BaseEntity<UserDTO> {
     private String role;
 
     @Column
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 
     @Column
     private String nacionalidade;

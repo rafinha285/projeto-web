@@ -96,7 +96,7 @@ form.addEventListener('submit', async (e) => {
   btnRegister.classList.add('loading');
   btnRegister.disabled = true;
 
-  const res = await fetch('/register', {
+  const res = await fetch('/api/auth/register', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name, email, password })

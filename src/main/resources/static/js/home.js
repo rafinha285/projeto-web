@@ -20,7 +20,8 @@ async function getLocations() {
             throw new Error(`Erro de HTTP! status: ${response.status}`);
         }
 
-        return await response.json();
+        let result = await response.json();
+        return result.dados || result;
     } catch (error) {
         console.error("Erro ao buscar os destinos:", error);
         // Retorna um array vazio em caso de erro para não quebrar o layout
@@ -36,13 +37,7 @@ async function getLocations() {
  * @returns {Promise<any>}
  */
 async function bookDestination(id) {
-    const response = await fetch(`/api/destination/book/${id}`, {method: "POST"});
-    if (!response.ok) {
-        throw new Error(`Erro ao agendar o destino ${id}`);
-    }
-    const json = await response.json();
-    console.log(json);
-    return json
+    window.location.href = `/reserve?id=${id}`;
 }
 
 /**
@@ -62,7 +57,10 @@ function renderDestinations(locations) {
     locations.forEach(location => {
         const div = `
             <div class="dest-card">
-                <img src="${location.imageUrl}" alt="${location.name}" class="dest-img">
+                <div class="dest-img-wrap" style="position:relative;">
+                    <img src="${location.imageUrl}" alt="${location.name}" class="dest-img">
+                    <button class="fav-add-btn" onclick="toggleFavorite(this, ${location.id})" title="Favoritar">🤍</button>
+                </div>
                 <div class="dest-info">
                     <span class="dest-tag">${location.continent}</span>
                     <h3>${location.name}, ${location.country}</h3>
@@ -79,9 +77,10 @@ function renderDestinations(locations) {
 }
 async function checkAdmin() {
     try {
-        const response = await fetch("/profile/user");
+        const response = await fetch("/api/profile/user");
         if (!response.ok) return;
-        const user = await response.json();
+        let user = await response.json();
+        user = user.dados || user;
         if (user.role === "admin") {
             const btn = document.getElementById("btn-admin");
             if (btn) btn.style.display = "";
@@ -110,4 +109,18 @@ function getSearchPage(){
     url.searchParams.set("endDate", endValue);
 
     window.location.href = url.toString();
+}
+
+async function toggleFavorite(btn, locationId) {
+    const isFavorited = btn.textContent === '❤️';
+    const method = isFavorited ? 'DELETE' : 'POST';
+    try {
+        const res = await fetch(`/api/profile/favorites/${locationId}`, { method });
+        if (res.ok) {
+            btn.textContent = isFavorited ? '🤍' : '❤️';
+            // Optional: alert
+        }
+    } catch (e) {
+        console.error(e);
+    }
 }

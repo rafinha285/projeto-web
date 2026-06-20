@@ -15,9 +15,10 @@ let currentSortDir = "asc";
 
 async function checkAdminAccess() {
     try {
-        const response = await fetch("/profile/user");
+        const response = await fetch("/api/profile/user");
         if (!response.ok) { showAccessDenied(); return false; }
-        const user = await response.json();
+        let user = await response.json();
+        user = user.dados || user;
         if (user.role !== "admin") { window.location.replace('/'); }
         return true;
     } catch (e) {
@@ -63,9 +64,10 @@ function setupSidebar() {
 
 async function fetchAllUsers() {
     try {
-        const response = await fetch("/admin/users");
+        const response = await fetch("/api/admin/users");
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        return await response.json();
+        const json = await response.json();
+        return json.dados || json;
     } catch (error) {
         console.error("Erro ao buscar usuários:", error);
         return null;
@@ -215,7 +217,7 @@ async function saveUser() {
     };
 
     try {
-        const response = await fetch(`/admin/users?email=${encodeURIComponent(email)}`, {
+        const response = await fetch(`/api/admin/users?email=${encodeURIComponent(email)}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body)
@@ -223,7 +225,7 @@ async function saveUser() {
 
         const result = await response.json();
 
-        if (response.ok && result.status === "success") {
+        if (response.ok && (result.status === "success" || result.status === true)) {
             showToast("Usuário atualizado com sucesso!", "success");
             closeEditModal();
             // Refresh table

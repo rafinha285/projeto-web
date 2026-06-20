@@ -30,12 +30,12 @@ async function search() {
     showLoading(true);
 
     try {
-        const url = new URL('/search', window.location.origin);
+        const url = new URL('/api/location/search', window.location.origin);
         url.searchParams.append('name', name);
         url.searchParams.append('startDate', startDate);
         url.searchParams.append('endDate', endDate);
 
-        const res = await fetch(url.toString(), { method: 'POST' });
+        const res = await fetch(url.toString(), { method: 'GET' });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
         const result = await res.json()
@@ -67,7 +67,7 @@ async function search() {
 }
 
 function bookDestination(id) {
-    window.location.href = `/reserve/?id=${id}`;
+    window.location.href = `/reserve?id=${id}`;
 }
 
 function applyFilterAndSort() {
@@ -130,6 +130,7 @@ function renderDestinations(locations) {
       <div class="dest-img-wrap">
         <img src="${loc.imageUrl || ''}" alt="${loc.name || 'Destino'}" class="dest-img"
              onerror="this.style.background='linear-gradient(135deg,#132236,#1a3050)'; this.style.objectFit='none';">
+        <button class="fav-add-btn" onclick="toggleFavorite(this, ${loc.id})" title="Favoritar">🤍</button>
       </div>
       <div class="dest-info">
         <span class="dest-tag">${loc.continent || '🌍'}</span>
@@ -237,3 +238,19 @@ async function init() {
 
 document.getElementById('btnSearch').addEventListener('click', search);
 document.addEventListener('DOMContentLoaded', init);
+
+async function toggleFavorite(btn, locationId) {
+    const isFavorited = btn.textContent === '❤️';
+    const method = isFavorited ? 'DELETE' : 'POST';
+    try {
+        const res = await fetch(`/api/profile/favorites/${locationId}`, { method });
+        if (res.ok) {
+            btn.textContent = isFavorited ? '🤍' : '❤️';
+            showToast(isFavorited ? '💔 Removido dos favoritos.' : '❤️ Adicionado aos favoritos!', true);
+        } else if(res.status === 401 || res.status === 403) {
+            showToast('Você precisa estar logado para favoritar.');
+        }
+    } catch (e) {
+        console.error(e);
+    }
+}

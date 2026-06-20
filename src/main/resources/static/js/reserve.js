@@ -13,9 +13,8 @@ async function init() {
 
     try {
         // Fetch destination info. We fetch all from /search as a reliable open endpoint
-        const formData = new URLSearchParams();
-        const res = await fetch('/search', {
-            method: 'POST',
+        const res = await fetch('/api/location/search', {
+            method: 'GET',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
 
@@ -112,8 +111,8 @@ async function handleBookingSubmit(e) {
 
     try {
         const days = parseInt(document.getElementById('summaryDays').textContent);
-        const checkInVal = document.getElementById('checkIn').valueAsDate;
-        const checkOutVal = document.getElementById('checkOut').valueAsDate;
+        const checkInVal = document.getElementById('checkIn').value;
+        const checkOutVal = document.getElementById('checkOut').value;
 
         if (days <= 0) {
             showToast('As datas de check-in e check-out são inválidas.');
@@ -127,7 +126,7 @@ async function handleBookingSubmit(e) {
             checkOut: checkOutVal
         };
 
-        const res = await fetch("/book", {
+        const res = await fetch("/api/book", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

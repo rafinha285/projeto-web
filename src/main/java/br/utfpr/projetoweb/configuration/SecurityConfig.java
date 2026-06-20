@@ -31,7 +31,7 @@ public class SecurityConfig {
                 // Rotas Públicas (conforme aprovação do plano)
                 .requestMatchers("/", "/home", "/login", "/register", "/search").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/assets/**", "/images/**").permitAll()
-                .requestMatchers("/api/locations", "/api/auth/**").permitAll() // Se houver endpoints abertos
+                .requestMatchers("/api/locations", "/api/location/**", "/api/auth/**", "/api/search/**").permitAll()
                 // Rotas Protegidas
                 .anyRequest().authenticated()
             )

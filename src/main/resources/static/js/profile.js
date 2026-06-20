@@ -62,7 +62,7 @@ async function loadMinhasViagens() {
   listEl.style.display = 'none';
 
   try {
-    const res = await fetch('/profile/bookings', {
+    const res = await fetch('/api/profile/bookings', {
       method: 'GET',
       credentials: 'include',
       headers: { 'Accept': 'application/json' }
@@ -87,20 +87,10 @@ async function loadMinhasViagens() {
       return;
     }
 
-    // Busca todas as localizações em paralelo antes de renderizar
-    const bookingsComLocalizacao = await Promise.all(
-        bookings.map(async (booking) => {
-          try {
-            const locRes = await fetch(`/location/${booking.locationId}`);
-            const locJson = await locRes.json();
-            const loc = locJson.dados || locJson.dadosArray?.[0] || locJson;
-            return { ...booking, loc };
-          } catch (err) {
-            console.error(`Erro ao buscar localização ${booking.locationId}:`, err);
-            return { ...booking, loc: {} };
-          }
-        })
-    );
+    // O backend já retorna as informações completas do location dentro do BookDTO
+    const bookingsComLocalizacao = bookings.map(booking => {
+        return { ...booking, loc: booking.location || {} };
+    });
 
     listEl.style.display = 'grid';
 
@@ -185,7 +175,7 @@ if (btnSave) {
     };
 
     try {
-      const response = await fetch("/profile/user", {
+      const response = await fetch("/api/profile/user", {
         method: "PATCH",
         credentials: "include",
         headers: { 'Content-Type': 'application/json' },
@@ -280,13 +270,13 @@ window.addEventListener('resize', () => {
 });
 
 // ── LOADING USER DATA FROM BACKEND ──
-document.addEventListener('DOMContentLoaded', async () => {
-
+document.addEventListener('DOMContentLoaded', async function initProfile() {
   try {
-    const response = await fetch('/profile/user');
+    const response = await fetch('/api/profile/user');
 
     if (response.ok) {
-      const userData = await response.json();
+      let result = await response.json();
+      let userData = result.dados || result;
 
       if (userData.name) {
         const heroName = document.getElementById('heroName');
@@ -366,6 +356,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     } else {
       console.warn('Endpoint de usuário retornou erro:', response.status);
+      if (response.status === 401 || response.status === 403 || response.status === 302) {
+        window.location.href = '/login';
+      }
     }
   } catch (err) {
     console.error('Erro de rede ao buscar dados do usuário:', err);
@@ -383,7 +376,7 @@ async function loadMeusFavoritos() {
   listEl.style.display = 'none';
 
   try {
-    const res = await fetch('/profile/favorites', {
+    const res = await fetch('/api/profile/favorites', {
       method: 'GET',
       credentials: 'include',
       headers: { 'Accept': 'application/json' }
@@ -411,10 +404,13 @@ async function loadMeusFavoritos() {
     const favsComLocalizacao = await Promise.all(
         favorites.map(async (fav) => {
           try {
-            const locRes = await fetch(`/location/${fav.locationId}`);
-            const locJson = await locRes.json();
-            const loc = locJson.dados || locJson.dadosArray?.[0] || locJson;
-            return { ...fav, loc };
+            const locRes = await fetch(`/api/location/${fav.locationId}`);
+            if (locRes.ok) {
+              const locJson = await locRes.json();
+              const loc = locJson.dados || locJson.dadosArray?.[0] || locJson;
+              return { ...fav, loc };
+            }
+            return { ...fav, loc: {} };
           } catch (err) {
             console.error(`Erro ao buscar localização ${fav.locationId}:`, err);
             return { ...fav, loc: {} };
@@ -436,7 +432,7 @@ async function loadMeusFavoritos() {
           <div class="viagem-img-wrap">
             <img src="${loc.imageUrl || ''}" alt="${loc.name || 'Destino'}" onerror="this.style.display='none'">
             <span class="viagem-badge">${loc.continent || '🌍'}</span>
-            <button class="fav-remove-btn" onclick="removeFavorito(this)" title="Remover dos favoritos">✕</button>
+            <button class="fav-remove-btn" onclick="removeFavorito(this, ${fav.locationId})" title="Remover dos favoritos">✕</button>
           </div>
           <div class="viagem-info">
             <h3 class="viagem-name">${loc.name || 'Destino'}${loc.country ? ', ' + loc.country : ''}</h3>
@@ -460,9 +456,12 @@ async function loadMeusFavoritos() {
   }
 }
 
-function removeFavorito(btn) {
+function removeFavorito(btn, locationId) {
   const card = btn.closest('.viagem-card');
   if (!card) return;
+
+  fetch(`/api/profile/favorites/${locationId}`, { method: 'DELETE' }).catch(console.error);
+
   card.style.transform = 'scale(0.9)';
   card.style.opacity = '0';
   setTimeout(() => {

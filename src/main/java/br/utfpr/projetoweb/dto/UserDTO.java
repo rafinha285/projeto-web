@@ -2,7 +2,7 @@ package br.utfpr.projetoweb.dto;
 
 import br.utfpr.projetoweb.entities.UserEntity;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public record UserDTO(
     Long id,
@@ -10,7 +10,8 @@ public record UserDTO(
     String name,
     String role,
 
-    Date dataNascimento,
+    @com.fasterxml.jackson.annotation.JsonFormat(shape = com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    LocalDate dataNascimento,
     String nacionalidade,
     String numTelefone,
     String cidade,

@@ -14,7 +14,7 @@ async function loadLocations() {
     loadEl.style.display = 'block';
 
     try {
-        const res = await fetch('/locations', {
+        const res = await fetch('/api/locations', {
             method: 'GET',
             headers: { 'Accept': 'application/json' }
         });
@@ -82,7 +82,7 @@ async function handleAddDestination(e) {
     };
 
     try {
-        const res = await fetch('/locations', {
+        const res = await fetch('/api/locations', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -111,7 +111,7 @@ async function deleteLocation(id) {
     if (!confirm('Deseja realmente remover este destino da plataforma?')) return;
 
     try {
-        const res = await fetch(`/locations?id=${id}`, {
+        const res = await fetch(`/api/locations?id=${id}`, {
             method: 'DELETE'
         });
 

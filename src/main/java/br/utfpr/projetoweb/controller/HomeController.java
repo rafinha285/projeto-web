@@ -26,11 +26,6 @@ public class HomeController {
         return "search";
     }
 
-    @GetMapping("/profile")
-    public String profile() {
-        return "profile";
-    }
-
     @GetMapping("/gerenciamento")
     public String gerenciamento() {
         return "gerenciamento";
@@ -44,5 +39,10 @@ public class HomeController {
     @GetMapping("/reserve")
     public String reserve() {
         return "reserve";
+    }
+
+    @GetMapping("/profile")
+    public String profile() {
+        return "profile";
     }
 }
