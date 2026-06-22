@@ -50,7 +50,8 @@ public class FavoriteEntity {
         return new br.utfpr.projetoweb.dto.FavoriteDTO(
                 this.id,
                 this.user.getId(),
-                this.location.getId()
+                this.location.getId(),
+                this.location.toDTO()
         );
     }
 }

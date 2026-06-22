@@ -111,6 +111,35 @@ function getSearchPage(){
     window.location.href = url.toString();
 }
 
+function showToast(message) {
+    let toast = document.getElementById('toast');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast';
+        toast.className = 'toast';
+        toast.style.cssText = `
+      position:fixed; bottom:28px; left:50%;
+      transform:translateX(-50%) translateY(20px);
+      background:#1e3a52; border:1px solid var(--gold);
+      border-radius:10px; padding:12px 24px;
+      font-size:0.88rem; color:#f5f0e8;
+      opacity:0; transition:opacity .3s, transform .3s;
+      z-index:999; white-space:nowrap;
+    `;
+        document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.classList.add('show');
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(-50%) translateY(20px)';
+        setTimeout(() => toast.classList.remove('show'), 300);
+    }, 2500);
+}
+
 async function toggleFavorite(btn, locationId) {
     const isFavorited = btn.textContent === '❤️';
     const method = isFavorited ? 'DELETE' : 'POST';
@@ -118,9 +147,13 @@ async function toggleFavorite(btn, locationId) {
         const res = await fetch(`/api/profile/favorites/${locationId}`, { method });
         if (res.ok) {
             btn.textContent = isFavorited ? '🤍' : '❤️';
-            // Optional: alert
+        } else if (res.status === 401 || res.status === 403) {
+            showToast('Você precisa estar logado! Redirecionando...');
+            setTimeout(() => { window.location.href = "/login"; }, 1500);
+        } else {
+            console.error("Erro ao favoritar:", await res.text());
         }
     } catch (e) {
-        console.error(e);
+        console.error("Erro na requisição:", e);
     }
 }

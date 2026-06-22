@@ -2,6 +2,8 @@ package br.utfpr.projetoweb.controller;
 
 import br.utfpr.projetoweb.dto.UserDTO;
 import br.utfpr.projetoweb.entities.UserEntity;
+import br.utfpr.projetoweb.repositories.FavoriteRepository;
+import br.utfpr.projetoweb.repositories.LocationRepository;
 import br.utfpr.projetoweb.repositories.UserRepository;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,10 +24,16 @@ import java.util.List;
 public class ProfileController {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final LocationRepository locationRepository;
 
-    public ProfileController(UserRepository userRepository, BookRepository bookRepository) {
+    public ProfileController(UserRepository userRepository, BookRepository bookRepository,
+                             br.utfpr.projetoweb.repositories.FavoriteRepository favoriteRepository,
+                             br.utfpr.projetoweb.repositories.LocationRepository locationRepository) {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
+        this.favoriteRepository = favoriteRepository;
+        this.locationRepository = locationRepository;
     }
 
     @GetMapping("/user")
@@ -67,9 +75,9 @@ public class ProfileController {
         return bookRepository.findByUser(user).stream().map(BookEntity::toDTO).toList();
     }
 
-    @GetMapping("/favorites")
+    @org.springframework.web.bind.annotation.GetMapping("/favorites")
     @ResponseBody
-    public List<br.utfpr.projetoweb.dto.FavoriteDTO> getFavorites(@AuthenticationPrincipal UserDetails userDetails, br.utfpr.projetoweb.repositories.FavoriteRepository favoriteRepository){
+    public java.util.List<br.utfpr.projetoweb.dto.FavoriteDTO> getFavorites(@AuthenticationPrincipal UserDetails userDetails){
         String email = userDetails.getUsername();
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(()->new UsernameNotFoundException("Usuário não encontrado"));
@@ -78,7 +86,7 @@ public class ProfileController {
 
     @org.springframework.web.bind.annotation.PostMapping("/favorites/{locationId}")
     @ResponseBody
-    public void addFavorite(@AuthenticationPrincipal UserDetails userDetails, @org.springframework.web.bind.annotation.PathVariable Long locationId, br.utfpr.projetoweb.repositories.FavoriteRepository favoriteRepository, br.utfpr.projetoweb.repositories.LocationRepository locationRepository){
+    public void addFavorite(@AuthenticationPrincipal UserDetails userDetails, @org.springframework.web.bind.annotation.PathVariable Long locationId){
         String email = userDetails.getUsername();
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(()->new UsernameNotFoundException("Usuário não encontrado"));
@@ -90,7 +98,7 @@ public class ProfileController {
 
     @org.springframework.web.bind.annotation.DeleteMapping("/favorites/{locationId}")
     @ResponseBody
-    public void removeFavorite(@AuthenticationPrincipal UserDetails userDetails, @org.springframework.web.bind.annotation.PathVariable Long locationId, br.utfpr.projetoweb.repositories.FavoriteRepository favoriteRepository, br.utfpr.projetoweb.repositories.LocationRepository locationRepository){
+    public void removeFavorite(@AuthenticationPrincipal UserDetails userDetails, @org.springframework.web.bind.annotation.PathVariable Long locationId){
         String email = userDetails.getUsername();
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(()->new UsernameNotFoundException("Usuário não encontrado"));

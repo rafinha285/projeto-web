@@ -248,7 +248,8 @@ async function toggleFavorite(btn, locationId) {
             btn.textContent = isFavorited ? '🤍' : '❤️';
             showToast(isFavorited ? '💔 Removido dos favoritos.' : '❤️ Adicionado aos favoritos!', true);
         } else if(res.status === 401 || res.status === 403) {
-            showToast('Você precisa estar logado para favoritar.');
+            showToast('Você precisa estar logado! Redirecionando...');
+            setTimeout(() => { window.location.href = "/login"; }, 1500);
         }
     } catch (e) {
         console.error(e);

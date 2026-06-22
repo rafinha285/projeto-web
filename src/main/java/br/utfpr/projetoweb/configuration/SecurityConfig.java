@@ -38,7 +38,11 @@ public class SecurityConfig {
             .exceptionHandling(ex -> ex
                 // Redireciona usuários não logados que tentem acessar rotas protegidas (como /profile) para a tela de login
                 .authenticationEntryPoint((request, response, authException) -> {
-                    response.sendRedirect("/login");
+                    if (request.getRequestURI().startsWith("/api/")) {
+                        response.setStatus(401);
+                    } else {
+                        response.sendRedirect("/login");
+                    }
                 })
             )
             .sessionManagement(session -> session

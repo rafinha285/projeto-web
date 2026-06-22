@@ -401,27 +401,12 @@ async function loadMeusFavoritos() {
     }
 
     // Busca localizações em paralelo
-    const favsComLocalizacao = await Promise.all(
-        favorites.map(async (fav) => {
-          try {
-            const locRes = await fetch(`/api/location/${fav.locationId}`);
-            if (locRes.ok) {
-              const locJson = await locRes.json();
-              const loc = locJson.dados || locJson.dadosArray?.[0] || locJson;
-              return { ...fav, loc };
-            }
-            return { ...fav, loc: {} };
-          } catch (err) {
-            console.error(`Erro ao buscar localização ${fav.locationId}:`, err);
-            return { ...fav, loc: {} };
-          }
-        })
-    );
+    const favsComLocalizacao = favorites;
 
     listEl.style.display = 'grid';
 
     listEl.innerHTML = favsComLocalizacao.map((item, i) => {
-      const loc = item.loc;
+      const loc = item.location || {};
 
       const price = loc.price
           ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(loc.price)
@@ -432,7 +417,7 @@ async function loadMeusFavoritos() {
           <div class="viagem-img-wrap">
             <img src="${loc.imageUrl || ''}" alt="${loc.name || 'Destino'}" onerror="this.style.display='none'">
             <span class="viagem-badge">${loc.continent || '🌍'}</span>
-            <button class="fav-remove-btn" onclick="removeFavorito(this, ${fav.locationId})" title="Remover dos favoritos">✕</button>
+            <button class="fav-remove-btn" onclick="removeFavorito(this, ${item.locationId})" title="Remover dos favoritos">✕</button>
           </div>
           <div class="viagem-info">
             <h3 class="viagem-name">${loc.name || 'Destino'}${loc.country ? ', ' + loc.country : ''}</h3>
