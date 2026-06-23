@@ -6,6 +6,9 @@ spring:
         url: "jdbc:postgresql://localhost:5432/projetoweb"
         username: "${DB_USER:postgres}"
         password: "${DB_PASSWORD}"
+    flyway:
+        enabled: true
+        baseline-on-migrate: true
     jpa:
         database-platform: org.hibernate.dialect.PostgreSQLDialect
         hibernate:
