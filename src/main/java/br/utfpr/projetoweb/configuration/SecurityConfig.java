@@ -49,6 +49,12 @@ public class SecurityConfig {
                 // A sessão em si será stateless, pois depende do Cookie (JWT) e não do JSESSIONID em memória
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
+            .logout(logout -> logout
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/login")
+                .deleteCookies("viagem_session_token")
+                .permitAll()
+            )
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
