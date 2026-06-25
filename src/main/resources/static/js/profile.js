@@ -4,6 +4,7 @@ const tabPanels = document.querySelectorAll('.tab-panel');
 
 let viagensLoaded = false;
 let favoritosLoaded = false;
+let pagamentosLoaded = false;
 
 navTabs.forEach(btn => {
   btn.addEventListener('click', (e) => {
@@ -42,6 +43,11 @@ navTabs.forEach(btn => {
     if (target === 'favoritos' && !favoritosLoaded) {
       favoritosLoaded = true;
       loadMeusFavoritos();
+    }
+
+    if (target === 'pagamento' && !pagamentosLoaded) {
+      pagamentosLoaded = true;
+      loadCards();
     }
 
     // Fecha sidebar no mobile
@@ -462,14 +468,112 @@ function removeFavorito(btn, locationId) {
   }, 250);
 }
 
-// ── PAGAMENTO — ADICIONAR CARTÃO ──
+// ── PAGAMENTO — CARTÕES DE CRÉDITO ──
 const btnAddCard = document.getElementById('btnAddCard');
 const addCardForm = document.getElementById('addCardForm');
 const btnCancelCard = document.getElementById('btnCancelCard');
 const btnSaveCard = document.getElementById('btnSaveCard');
+const inputCardId = document.getElementById('inputCardId');
+
+async function loadCards() {
+  const cardsList = document.getElementById('paymentCardsList');
+  if (!cardsList) return;
+  
+  cardsList.innerHTML = '<div style="padding: 16px; text-align: center;">Carregando cartões...</div>';
+  
+  try {
+    const res = await fetch('/api/profile/cards');
+    if (!res.ok) throw new Error('Erro ao carregar cartões');
+    const result = await res.json();
+    const cards = result.dados || result;
+    
+    if (!cards || cards.length === 0) {
+      cardsList.innerHTML = '<div style="padding: 16px; text-align: center; color: #888;">Nenhum cartão cadastrado.</div>';
+      return;
+    }
+    
+    cardsList.innerHTML = cards.map(card => {
+      let brandClass = 'visa';
+      let brandName = 'VISA';
+      if (card.cardNumber.startsWith('5')) {
+        brandClass = 'mastercard';
+        brandName = 'MC';
+      }
+      
+      const last4 = card.cardNumber.slice(-4);
+      
+      return `
+        <div class="credit-card-wrap">
+          <div class="credit-card ${brandClass}">
+            <div class="card-chip"></div>
+            <div class="card-brand-logo">${brandName}</div>
+            <div class="card-number-display">•••• •••• •••• ${last4}</div>
+            <div class="card-info-row">
+              <div class="card-name-display">${card.cardName || 'Titular'}</div>
+              <div class="card-expiry-display">${card.expiry}</div>
+            </div>
+          </div>
+          <div class="card-actions">
+            <button class="btn-edit-card" onclick="editCard(${card.id}, '${card.cardName || ''}', '${card.cardNumber}', '${card.expiry}', '${card.cvv}')">✎ Editar</button>
+            <button class="btn-delete-card" onclick="deleteCard(${card.id}, this)">✕ Remover</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error(err);
+    cardsList.innerHTML = '<div style="padding: 16px; text-align: center; color: red;">Erro ao carregar cartões.</div>';
+  }
+}
+
+window.editCard = function(id, name, number, expiry, cvv) {
+  if (addCardForm) {
+    document.getElementById('addCardFormTitle').textContent = '✏️ Editar Cartão';
+    inputCardId.value = id;
+    document.getElementById('inputCardName').value = name;
+    document.getElementById('inputCardNumber').value = number;
+    document.getElementById('inputCardExpiry').value = expiry;
+    document.getElementById('inputCardCvv').value = cvv;
+    
+    addCardForm.style.display = 'block';
+    addCardForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (btnAddCard) {
+      btnAddCard.disabled = true;
+      btnAddCard.style.opacity = '0.5';
+    }
+  }
+};
+
+window.deleteCard = async function(id, btnElement) {
+  if (!confirm('Deseja realmente remover este cartão?')) return;
+  
+  try {
+    const res = await fetch(`/api/profile/cards/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Erro ao excluir');
+    
+    showToast('🗑️ Cartão removido.');
+    const cardItem = btnElement.closest('.credit-card-wrap');
+    if (cardItem) {
+      cardItem.style.transform = 'scale(0.95)';
+      cardItem.style.opacity = '0';
+      setTimeout(() => cardItem.remove(), 250);
+    }
+  } catch (err) {
+    showToast('❌ Erro ao remover cartão.');
+    console.error(err);
+  }
+};
 
 if (btnAddCard && addCardForm) {
   btnAddCard.addEventListener('click', () => {
+    document.getElementById('addCardFormTitle').textContent = '➕ Novo Cartão';
+    if (inputCardId) inputCardId.value = '';
+    
+    ['inputCardName', 'inputCardNumber', 'inputCardExpiry', 'inputCardCvv'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    
     addCardForm.style.display = 'block';
     addCardForm.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     btnAddCard.disabled = true;
@@ -480,7 +584,7 @@ if (btnAddCard && addCardForm) {
 if (btnCancelCard && addCardForm) {
   btnCancelCard.addEventListener('click', () => {
     addCardForm.style.display = 'none';
-    // Limpa campos
+    if (inputCardId) inputCardId.value = '';
     ['inputCardName', 'inputCardNumber', 'inputCardExpiry', 'inputCardCvv'].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = '';
@@ -493,7 +597,8 @@ if (btnCancelCard && addCardForm) {
 }
 
 if (btnSaveCard) {
-  btnSaveCard.addEventListener('click', () => {
+  btnSaveCard.addEventListener('click', async () => {
+    const id = inputCardId?.value;
     const name = document.getElementById('inputCardName')?.value;
     const number = document.getElementById('inputCardNumber')?.value;
     const expiry = document.getElementById('inputCardExpiry')?.value;
@@ -503,66 +608,48 @@ if (btnSaveCard) {
       showToast('❌ Preencha todos os campos do cartão.');
       return;
     }
-    if (number.replace(/\s/g, '').length < 13) {
-      showToast('❌ Número do cartão inválido.');
-      return;
-    }
 
-    showToast('✅ Cartão adicionado com sucesso!');
-    if (addCardForm) addCardForm.style.display = 'none';
-    if (btnAddCard) {
-      btnAddCard.disabled = false;
-      btnAddCard.style.opacity = '1';
-    }
+    const payload = {
+      cardName: name,
+      cardNumber: number,
+      expiry: expiry,
+      cvv: cvv
+    };
+    
+    const method = id ? 'PATCH' : 'POST';
+    const url = id ? `/api/profile/cards/${id}` : '/api/profile/cards';
 
-    // Adiciona visualmente o novo cartão na lista
-    const last4 = number.replace(/\s/g, '').slice(-4);
-    const cardsList = document.getElementById('paymentCardsList');
-    if (cardsList) {
-      const newCard = document.createElement('div');
-      newCard.className = 'payment-card-item';
-      newCard.style.animation = 'fadeInUp 0.3s ease both';
-      newCard.innerHTML = `
-        <div class="card-brand visa">CARD</div>
-        <div class="card-details">
-          <span class="card-number">•••• •••• •••• ${last4}</span>
-          <span class="card-expiry">Expira ${expiry}</span>
-        </div>
-        <button class="card-remove-btn" title="Remover">✕</button>
-      `;
-      cardsList.appendChild(newCard);
-      newCard.querySelector('.card-remove-btn').addEventListener('click', function() {
-        removePaymentCard(this);
+    try {
+      btnSaveCard.disabled = true;
+      btnSaveCard.textContent = '⏳ Salvando...';
+      
+      const res = await fetch(url, {
+        method: method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
+      
+      if (!res.ok) throw new Error('Erro ao salvar');
+      
+      showToast('✅ Cartão salvo com sucesso!');
+      
+      if (addCardForm) addCardForm.style.display = 'none';
+      if (btnAddCard) {
+        btnAddCard.disabled = false;
+        btnAddCard.style.opacity = '1';
+      }
+      
+      loadCards();
+      
+    } catch (err) {
+      console.error(err);
+      showToast('❌ Erro ao salvar cartão.');
+    } finally {
+      btnSaveCard.disabled = false;
+      btnSaveCard.textContent = 'Salvar Cartão';
     }
-
-    // Limpa campos
-    ['inputCardName', 'inputCardNumber', 'inputCardExpiry', 'inputCardCvv'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.value = '';
-    });
   });
 }
-
-// Remove cartão de pagamento
-function removePaymentCard(btn) {
-  const card = btn.closest('.payment-card-item');
-  if (!card) return;
-  card.style.transform = 'scale(0.95)';
-  card.style.opacity = '0';
-  card.style.transition = 'all 0.25s ease';
-  setTimeout(() => {
-    card.remove();
-    showToast('🗑️ Cartão removido.');
-  }, 250);
-}
-
-// Attach remove handler to existing cards
-document.querySelectorAll('.card-remove-btn').forEach(btn => {
-  btn.addEventListener('click', function() {
-    removePaymentCard(this);
-  });
-});
 
 // Salvar endereço de cobrança
 const btnSaveBilling = document.getElementById('btnSaveBilling');

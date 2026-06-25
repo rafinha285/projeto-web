@@ -253,33 +253,47 @@
         <div class="card card-full-mini">
           <div class="section-header-row">
             <h3 class="card-title-mini">💳 Métodos de Pagamento</h3>
-            <button class="btn-outline-sm" id="btnAddCard">+ Adicionar</button>
+            <button class="btn-add-card" id="btnAddCard">+ Adicionar</button>
           </div>
 
           <div class="payment-cards" id="paymentCardsList">
-            <div class="payment-card-item">
-              <div class="card-brand visa">VISA</div>
-              <div class="card-details">
-                <span class="card-number">•••• •••• •••• 4829</span>
-                <span class="card-expiry">Expira 08/27</span>
+            <div class="credit-card-wrap">
+              <div class="credit-card visa">
+                <div class="card-chip"></div>
+                <div class="card-brand-logo">VISA</div>
+                <div class="card-number-display">•••• •••• •••• 4829</div>
+                <div class="card-info-row">
+                  <div class="card-name-display">João Ninguém</div>
+                  <div class="card-expiry-display">08/27</div>
+                </div>
               </div>
-              <span class="card-default-badge">Padrão</span>
-              <button class="card-remove-btn" title="Remover">✕</button>
+              <div class="card-actions">
+                <button class="btn-edit-card">✎ Editar</button>
+                <button class="btn-delete-card">✕ Remover</button>
+              </div>
             </div>
-            <div class="payment-card-item">
-              <div class="card-brand mastercard">MC</div>
-              <div class="card-details">
-                <span class="card-number">•••• •••• •••• 1053</span>
-                <span class="card-expiry">Expira 03/26</span>
+            <div class="credit-card-wrap">
+              <div class="credit-card mastercard">
+                <div class="card-chip"></div>
+                <div class="card-brand-logo">MC</div>
+                <div class="card-number-display">•••• •••• •••• 1053</div>
+                <div class="card-info-row">
+                  <div class="card-name-display">João Ninguém</div>
+                  <div class="card-expiry-display">03/26</div>
+                </div>
               </div>
-              <button class="card-remove-btn" title="Remover">✕</button>
+              <div class="card-actions">
+                <button class="btn-edit-card">✎ Editar</button>
+                <button class="btn-delete-card">✕ Remover</button>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Adicionar Novo Cartão -->
+        <!-- Adicionar/Editar Cartão -->
         <div class="card" id="addCardForm" style="display: none;">
-          <h3 class="card-title-mini">➕ Novo Cartão</h3>
+          <h3 class="card-title-mini" id="addCardFormTitle">➕ Novo Cartão</h3>
+          <input type="hidden" id="inputCardId">
           <div class="field"><label>Nome no Cartão</label><input type="text" id="inputCardName" placeholder="Como impresso no cartão"></div>
           <div class="field"><label>Número do Cartão</label><input type="text" id="inputCardNumber" placeholder="0000 0000 0000 0000" maxlength="19"></div>
           <div class="field-row">

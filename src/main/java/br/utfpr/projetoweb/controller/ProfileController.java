@@ -1,22 +1,17 @@
 package br.utfpr.projetoweb.controller;
 
+import br.utfpr.projetoweb.dto.CreditCardDTO;
+import br.utfpr.projetoweb.dto.FavoriteDTO;
 import br.utfpr.projetoweb.dto.UserDTO;
-import br.utfpr.projetoweb.entities.UserEntity;
-import br.utfpr.projetoweb.repositories.FavoriteRepository;
-import br.utfpr.projetoweb.repositories.LocationRepository;
-import br.utfpr.projetoweb.repositories.UserRepository;
+import br.utfpr.projetoweb.entities.*;
+import br.utfpr.projetoweb.repositories.*;
+import br.utfpr.projetoweb.security.CurrentUser;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import br.utfpr.projetoweb.dto.BookDTO;
-import br.utfpr.projetoweb.entities.BookEntity;
-import br.utfpr.projetoweb.repositories.BookRepository;
+
 import java.util.List;
 
 @RestController
@@ -26,31 +21,28 @@ public class ProfileController {
     private final BookRepository bookRepository;
     private final FavoriteRepository favoriteRepository;
     private final LocationRepository locationRepository;
+    private final CreditCardRepository creditCardRepository;
 
     public ProfileController(UserRepository userRepository, BookRepository bookRepository,
-                             br.utfpr.projetoweb.repositories.FavoriteRepository favoriteRepository,
-                             br.utfpr.projetoweb.repositories.LocationRepository locationRepository) {
+                             FavoriteRepository favoriteRepository,
+                             LocationRepository locationRepository,
+                             CreditCardRepository creditCardRepository) {
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.favoriteRepository = favoriteRepository;
         this.locationRepository = locationRepository;
+        this.creditCardRepository = creditCardRepository;
     }
 
     @GetMapping("/user")
     @ResponseBody
-    public UserDTO getUser(@AuthenticationPrincipal UserDetails userDetails){
-        String email = userDetails.getUsername();
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(()->new UsernameNotFoundException("Usuário não encontrado"));
+    public UserDTO getUser(@CurrentUser UserEntity user){
         return user.toDTO();
     }
 
     @PatchMapping("/user")
     @ResponseBody
-    public UserDTO updateUser(@AuthenticationPrincipal UserDetails userDetails, @RequestBody UserDTO userDTO){
-        String email = userDetails.getUsername();
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(()->new UsernameNotFoundException("Usuário não encontrado"));
+    public UserDTO updateUser(@CurrentUser UserEntity user, @RequestBody UserDTO userDTO){
         
         if (userDTO.name() != null) user.setName(userDTO.name());
         if (userDTO.dataNascimento() != null) user.setDataNascimento(userDTO.dataNascimento());
@@ -68,41 +60,63 @@ public class ProfileController {
 
     @GetMapping("/bookings")
     @ResponseBody
-    public List<BookDTO> getBookings(@AuthenticationPrincipal UserDetails userDetails){
-        String email = userDetails.getUsername();
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(()->new UsernameNotFoundException("Usuário não encontrado"));
+    public List<BookDTO> getBookings(@CurrentUser UserEntity user){
         return bookRepository.findByUser(user).stream().map(BookEntity::toDTO).toList();
     }
 
-    @org.springframework.web.bind.annotation.GetMapping("/favorites")
+    @GetMapping("/favorites")
     @ResponseBody
-    public java.util.List<br.utfpr.projetoweb.dto.FavoriteDTO> getFavorites(@AuthenticationPrincipal UserDetails userDetails){
-        String email = userDetails.getUsername();
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(()->new UsernameNotFoundException("Usuário não encontrado"));
-        return favoriteRepository.findByUser(user).stream().map(br.utfpr.projetoweb.entities.FavoriteEntity::toDTO).toList();
+    public java.util.List<FavoriteDTO> getFavorites(@CurrentUser UserEntity user){
+        return favoriteRepository.findByUser(user).stream().map(FavoriteEntity::toDTO).toList();
     }
 
-    @org.springframework.web.bind.annotation.PostMapping("/favorites/{locationId}")
+    @PostMapping("/favorites/{locationId}")
     @ResponseBody
-    public void addFavorite(@AuthenticationPrincipal UserDetails userDetails, @org.springframework.web.bind.annotation.PathVariable Long locationId){
-        String email = userDetails.getUsername();
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(()->new UsernameNotFoundException("Usuário não encontrado"));
-        br.utfpr.projetoweb.entities.LocationEntity location = locationRepository.findById(locationId).orElseThrow(()->new RuntimeException("Location not found"));
+    public void addFavorite(@CurrentUser UserEntity user, @PathVariable Long locationId){
+        LocationEntity location = locationRepository.findById(locationId).orElseThrow(()->new RuntimeException("Location not found"));
         if(favoriteRepository.findByUserAndLocation(user, location).isEmpty()) {
-            favoriteRepository.save(new br.utfpr.projetoweb.entities.FavoriteEntity(user, location));
+            favoriteRepository.save(new FavoriteEntity(user, location));
         }
     }
 
-    @org.springframework.web.bind.annotation.DeleteMapping("/favorites/{locationId}")
+    @DeleteMapping("/favorites/{locationId}")
     @ResponseBody
-    public void removeFavorite(@AuthenticationPrincipal UserDetails userDetails, @org.springframework.web.bind.annotation.PathVariable Long locationId){
-        String email = userDetails.getUsername();
-        UserEntity user = userRepository.findByEmail(email)
-                .orElseThrow(()->new UsernameNotFoundException("Usuário não encontrado"));
-        br.utfpr.projetoweb.entities.LocationEntity location = locationRepository.findById(locationId).orElseThrow(()->new RuntimeException("Location not found"));
+    public void removeFavorite(@CurrentUser UserEntity user, @PathVariable Long locationId){
+        LocationEntity location = locationRepository.findById(locationId).orElseThrow(()->new RuntimeException("Location not found"));
         favoriteRepository.findByUserAndLocation(user, location).ifPresent(favoriteRepository::delete);
+    }
+
+    @GetMapping("/cards")
+    @ResponseBody
+    public List<CreditCardDTO> getCards(@CurrentUser UserEntity user){
+        return creditCardRepository.findByUser(user).stream().map(CreditCardEntity::toDTO).toList();
+    }
+
+    @PostMapping("/cards")
+    @ResponseBody
+    public CreditCardDTO addCard(@CurrentUser UserEntity user, @RequestBody CreditCardDTO dto){
+        CreditCardEntity card = dto.toEntity();
+        card.setUser(user);
+        return creditCardRepository.save(card).toDTO();
+    }
+
+    @PatchMapping("/cards/{cardId}")
+    @ResponseBody
+    public CreditCardDTO updateCard(@CurrentUser UserEntity user, @PathVariable Long cardId, @RequestBody CreditCardDTO dto) {
+        CreditCardEntity card = creditCardRepository.findByIdAndUser(cardId, user)
+                .orElseThrow(() -> new RuntimeException("Cartão não encontrado"));
+
+        if(dto.cardName() != null) card.setCardName(dto.cardName());
+        if(dto.cardNumber() != null) card.setCardNumber(dto.cardNumber());
+        if(dto.expiry() != null) card.setExpiry(dto.expiry());
+        if(dto.cvv() != null) card.setCvv(dto.cvv());
+
+        return creditCardRepository.save(card).toDTO();
+    }
+
+    @DeleteMapping("/cards/{cardId}")
+    @ResponseBody
+    public void removeCard(@CurrentUser UserEntity user, @PathVariable Long cardId){
+        creditCardRepository.findByIdAndUser(cardId, user).ifPresent(creditCardRepository::delete);
     }
 }

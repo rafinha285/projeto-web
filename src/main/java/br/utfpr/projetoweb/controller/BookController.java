@@ -8,6 +8,7 @@ import br.utfpr.projetoweb.repositories.BookRepository;
 import br.utfpr.projetoweb.repositories.LocationRepository;
 import br.utfpr.projetoweb.repositories.UserRepository;
 import br.utfpr.projetoweb.request.BookRequest;
+import br.utfpr.projetoweb.security.CurrentUser;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,17 +37,15 @@ public class BookController {
     }
 
     @PostMapping
-    public BookDTO createBooking(@AuthenticationPrincipal UserDetails userDetails, @RequestBody BookRequest request) {
-        if (userDetails == null) {
+    public BookDTO createBooking(@CurrentUser UserEntity user, @RequestBody BookRequest request) {
+
+        if(user == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Não autorizado");
         }
 
         if (request.locationId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ID da localização ausente");
         }
-
-        UserEntity user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
         LocationEntity location = locationRepository.findById(request.locationId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Localização não encontrada"));
